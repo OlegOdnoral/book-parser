@@ -1,8 +1,65 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "book-parser": {
+      "root": "apps/book-parser",
+      "sourceRoot": "apps/book-parser/src",
+      "projectType": "application",
+      "prefix": "book-parser",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/book-parser",
+            "main": "apps/book-parser/src/main.ts",
+            "tsConfig": "apps/book-parser/tsconfig.app.json",
+            "assets": ["apps/book-parser/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/book-parser/src/environments/environment.ts",
+                  "with": "apps/book-parser/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "book-parser:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/book-parser/tsconfig.app.json",
+              "apps/book-parser/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/book-parser/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/book-parser/jest.config.js",
+            "tsConfig": "apps/book-parser/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nrwl/express"
   },
   "schematics": {
     "@nrwl/workspace": {
@@ -62,5 +119,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "defaultProject": "book-parser"
 }
