@@ -15,7 +15,17 @@ import { parseFile, parseFileSync } from './app/parser/parser.controler';
 import { fork, isMaster, isWorker, worker } from 'cluster';
 import { cpus } from 'os';
 
+import { SequelizeConnection } from './app/utils/database';
+
 const app = express();
+
+SequelizeConnection.authenticate().then(() => {
+  try {
+    SequelizeConnection.sync({force: true});
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 app.get('/api', (req, res) => {
   parseFileSync();
