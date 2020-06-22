@@ -10,71 +10,23 @@
 
 import * as express from 'express';
 
-import { parseFile } from './app/parser/parser.controler';
 
-import { fork, isMaster, isWorker, worker } from 'cluster';
-import { cpus } from 'os';
-
-import { connectToRabbit, publishToQueue, subscribeOnChannel, clear } from './app/queue/services/rabbit.service'
-
-import { SequelizeConnection } from './app/utils/database';
+import { QueueSender } from './app/parser//parser.controler';
 
 const app = express();
 
-SequelizeConnection.authenticate().then(async () => {
-  console.log("database connected")
-
-  try {
-    await SequelizeConnection.sync({ force: true });
-  } catch (error) {
-    console.log(error.message)
-  }
-
-}).catch((e: any) => {
-  console.log(e.message)
-})
+const queueSender = new QueueSender();
 
 app.get('/api', (req, res) => {
-  parseFile();
+  queueSender.getPathToFiles();
   res.send({ message: 'Welcome to book-parser!' });
 });
 
 const port = process.env.port || 3333;
 const server = app.listen(port, async () => {
-  await connectToRabbit();
-  await clear();
-  await subscribeOnChannel();
-  await publishToQueue('Test message');
-
-
   console.log(`Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);
 
-// if (isMaster) {
-//   for (let i = 0; i <= cpus().length - 2; i++) {
-//     fork().on('disconnect', (worker) => {
-//       console.log(`Worker ${worker} disconnect`);
-//     }).on('exit', (worker) => {
-//       console.log(`Worker ${worker} exit`);
-//     });
-//   }
-// }
-
-// if (isWorker) {
-
-//   app.get('/api', (req, res) => {
-//     console.log(`Worker was call ${worker.id}`);
-//     parseFile();
-//     res.send({ message: 'Welcome to book-parser!' });
-//   });
-
-//   const port = process.env.port || 3333;
-//   const server = app.listen(port, () => {
-//     console.log(`Listening at http://localhost:${port}/api`);
-//   });
-//   server.on('error', console.error);
-
-// }
 
 

@@ -1,17 +1,9 @@
-import { readFile, readFileSync, copyFile } from 'fs';
+import { readFileSync } from 'fs';
 import { DOMParser } from 'xmldom';
-import { ConsumeMessage, Replies } from 'amqplib';
+import { ConsumeMessage, Replies, Message } from 'amqplib';
 
 import { RabbitConnector } from '../services/rabbit.service';
 import { BookInfo, BookInfoI } from '../models/book-info.model';
-
-// const rabbitConnector = new RabbitConnector(
-//     'amqp://localhost:5672', 
-//     'guest', 
-//     'guest'
-//     );
-
-// rabbitConnector.tryConnect();
 
 
 export class BookParser extends RabbitConnector {
@@ -20,15 +12,18 @@ export class BookParser extends RabbitConnector {
 
     constructor() {
         super('amqp://localhost:5672', 'guest', 'guest');
-        this.tryConnect();
     }
 
     async subscribeOnChannel(): Promise<Replies.Consume> {
-        const queueChanel = this.chanel;
-        queueChanel.prefetch(1);
-        return await queueChanel.consume(this.queueName, async (msg: ConsumeMessage) => {
+        await this.tryConnect();
+        this.chanel.prefetch(1);
+        return await this.chanel.consume(this.queueName, async (msg: ConsumeMessage) => {
             const res = await this.parseFile(msg.content.toString());
-            if(res) queueChanel.ack(msg);
+            if(res) {
+                this.chanel.ack(msg);
+            } else {
+                this.chanel.reject(msg, false);
+            }
         }, { noAck: false })
     }
 
@@ -84,15 +79,6 @@ export class BookParser extends RabbitConnector {
             licenseRights,
         }
         return await this.saveBookInfo(booksInfo);
-
-        // dataForInsert.push(booksInfo);
-
-        // dataForInsert.forEach((item: BookInfoI) => {
-        //     BookInfo.findByPk(item.id).then((recordExist) => {
-        //         new BookInfo(item, { isNewRecord: !recordExist }).save();
-        //     })
-        //         .catch(err => console.log(err));
-        // })
 
     }
 
