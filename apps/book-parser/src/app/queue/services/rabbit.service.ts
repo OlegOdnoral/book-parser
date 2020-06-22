@@ -34,6 +34,7 @@ export const publishToQueue = async (data: string) => {
 
     connectionChannel.assertQueue(queueName, { durable: true });
     connectionChannel.sendToQueue(queueName, Buffer.from(data), { persistent: true });
+    //connectionChannel.close();
     //     console.log(dataWasInsert);
     //     connectionChannel.prefetch(1);
     //     connectionChannel.consume(queueName, (msg: ConsumeMessage) => {

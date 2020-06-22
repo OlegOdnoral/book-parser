@@ -56,6 +56,62 @@
           }
         }
       }
+    },
+    "parser-queue": {
+      "root": "apps/parser-queue",
+      "sourceRoot": "apps/parser-queue/src",
+      "projectType": "application",
+      "prefix": "parser-queue",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/parser-queue",
+            "main": "apps/parser-queue/src/main.ts",
+            "tsConfig": "apps/parser-queue/tsconfig.app.json",
+            "assets": ["apps/parser-queue/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/parser-queue/src/environments/environment.ts",
+                  "with": "apps/parser-queue/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "parser-queue:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/parser-queue/tsconfig.app.json",
+              "apps/parser-queue/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/parser-queue/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/parser-queue/jest.config.js",
+            "tsConfig": "apps/parser-queue/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {
