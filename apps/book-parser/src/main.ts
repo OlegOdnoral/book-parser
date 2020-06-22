@@ -15,6 +15,8 @@ import { parseFile } from './app/parser/parser.controler';
 import { fork, isMaster, isWorker, worker } from 'cluster';
 import { cpus } from 'os';
 
+import { connectToRabbit, publishToQueue, subscribeOnChannel, clear } from './app/queue/services/rabbit.service'
+
 import { SequelizeConnection } from './app/utils/database';
 
 const app = express();
@@ -38,7 +40,12 @@ app.get('/api', (req, res) => {
 });
 
 const port = process.env.port || 3333;
-const server = app.listen(port, () => {
+const server = app.listen(port, async () => {
+  await connectToRabbit();
+  await clear();
+  await subscribeOnChannel();
+  await publishToQueue('Test message');
+
 
   console.log(`Listening at http://localhost:${port}/api`);
 });
