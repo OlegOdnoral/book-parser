@@ -7,11 +7,25 @@ import * as express from 'express';
 
 import { fork, isMaster, isWorker, worker } from 'cluster';
 import { cpus } from 'os';
-import { on } from 'process';
-import {} from './app/'
+import { pid } from 'process';
+import { SequelizeConnection } from './app/utils/database';
 
 const app = express();
 const queueName = 'books_for_parse';
+
+
+SequelizeConnection.authenticate().then(async () => {
+  console.log("database connected")
+
+  try {
+    await SequelizeConnection.sync({ force: true });
+  } catch (error) {
+    console.log(error.message)
+  }
+
+}).catch((e: any) => {
+  console.log(e.message)
+})
 
 // app.get('/api', (req, res) => {
 //   res.send({ message: 'Welcome to parser-queue!' });
@@ -27,10 +41,10 @@ const queueName = 'books_for_parse';
 if (isMaster) {
   for (let i = 0; i <= cpus().length - 2; i++) {
 
-    fork().on('disconnect', (worker) => {
-      //console.log(`Worker ${worker} disconnect`);
+    fork().on('disconnect', () => {
+      console.log(`Worker ${pid} disconnect`);
     }).on('error', () => {
-      
+      console.log(`Worker ${pid} has error`);
     })
 
   }

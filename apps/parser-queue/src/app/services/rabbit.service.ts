@@ -28,7 +28,7 @@ export class RabbitConnector {
             this._connection = await connect(this._uri, credentials.plain(this._user, this._password));
             this._chanel = await this._connection.createConfirmChannel();
         } catch (error) {
-
+            console.log('Can`t connect to rebbit');
         }
     }
 
@@ -46,7 +46,7 @@ export class RabbitConnector {
         return this._chanel.sendToQueue(queueName, Buffer.from(data), { persistent: true });
     }
 
-    protected async subscribeOnChannel(queueName: string): Promise<Replies.Consume> {
+    protected async subscribeOnChannelAB(queueName: string, ): Promise<Replies.Consume> {
         this._chanel.prefetch(1);
         return await this._chanel.consume(queueName, (msg: ConsumeMessage) => {
             console.log(msg.content.toString());
