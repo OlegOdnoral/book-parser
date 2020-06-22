@@ -1,38 +1,39 @@
-import { Model, Table, PrimaryKey, Column } from 'sequelize-typescript';
+import { Model, Table, PrimaryKey, Column, Unique } from 'sequelize-typescript';
 
 export interface BookInfoI {
     id: string | number;
     title: string;
     author: string;
     publisher: string;
-    publication_date: string;
+    publicationDate: string;
     language: string;
     subject: string;
-    license_rights: string;
+    licenseRights: string;
 }
 
+
 @Table({
-    tableName: 'books_info',
+    tableName: 'book_info',
     timestamps: true
 })
 export class BookInfo extends Model implements BookInfoI {
 
     @PrimaryKey
     @Column
-    public id!: number;
+    public id: number;
 
-    @Column
+    @Column('text')
     public title: string;
-    @Column
+    @Column('text')
     public author: string;
-    @Column
+    @Column('text')
     public publisher: string;
-    @Column
-    public publication_date: string;
+    @Column('date')
+    public publicationDate: string;
     @Column
     public language: string;
-    @Column
+    @Column('text')
     public subject: string;
-    @Column
-    public license_rights: string;
+    @Column('text')
+    public licenseRights: string;
 }

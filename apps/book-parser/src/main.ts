@@ -10,7 +10,7 @@
 
 import * as express from 'express';
 
-import { parseFile, parseFileSync } from './app/parser/parser.controler';
+import { parseFile } from './app/parser/parser.controler';
 
 import { fork, isMaster, isWorker, worker } from 'cluster';
 import { cpus } from 'os';
@@ -19,21 +19,27 @@ import { SequelizeConnection } from './app/utils/database';
 
 const app = express();
 
-SequelizeConnection.authenticate().then(() => {
+SequelizeConnection.authenticate().then(async () => {
+  console.log("database connected")
+
   try {
-    SequelizeConnection.sync({force: true});
+    await SequelizeConnection.sync({ force: true });
   } catch (error) {
-    console.log(error);
+    console.log(error.message)
   }
+
+}).catch((e: any) => {
+  console.log(e.message)
 })
 
 app.get('/api', (req, res) => {
-  parseFileSync();
+  parseFile();
   res.send({ message: 'Welcome to book-parser!' });
 });
 
 const port = process.env.port || 3333;
 const server = app.listen(port, () => {
+
   console.log(`Listening at http://localhost:${port}/api`);
 });
 server.on('error', console.error);
