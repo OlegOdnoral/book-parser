@@ -17,7 +17,6 @@ export class QueueSender extends RabbitConnector {
     getPathToFiles = () => {
         this.tryConnect();
         new Glob(`${filesFolder}${sep}**${sep}*.rdf`, (err: Error, matches: string[]) => {
-            //matches = [matches[0]];
             matches.forEach((item: string) => this.publishToQueue(this.queueName, item));
         });
     }

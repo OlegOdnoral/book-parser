@@ -9,7 +9,6 @@
  */
 
 import * as express from 'express';
-import { environment } from './environments/environment';
 
 import { QueueSender } from './app/parser//parser.controler';
 
@@ -17,9 +16,9 @@ const app = express();
 
 const queueSender = new QueueSender();
 
-app.get('/api', (req, res) => {
+app.get('/send_data_to_parse', (req, res) => {
   queueSender.getPathToFiles();
-  res.send({ message: 'Welcome to book-parser!' });
+  res.send({ message: 'Lets start!' });
 });
 
 const port = process.env.port || 3333;
