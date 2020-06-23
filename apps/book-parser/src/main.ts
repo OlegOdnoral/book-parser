@@ -9,7 +9,7 @@
  */
 
 import * as express from 'express';
-
+import { environment } from './environments/environment';
 
 import { QueueSender } from './app/parser//parser.controler';
 

@@ -1,23 +1,24 @@
-import {Sequelize} from "sequelize-typescript"
+import { Sequelize } from "sequelize-typescript"
+import { isMaster } from 'cluster';
 
 import { BookInfo } from '../models/book-info.model';
+import { environment } from '../../environments/environment';
 
-// book_shelf
-export const SequelizeConnection = new Sequelize('postgres', 'postgres', 'postgres', {
-    dialect: 'postgres',
-    host: 'localhost',
-    models: [BookInfo],
-    logging: false,
-});
+export const SequelizeConnection = new Sequelize(
+    environment.dbDatabase,
+    environment.dbUser,
+    environment.dbPassword,
+    {
+        dialect: environment.dbDialect,
+        host: environment.dbHost,
+        models: [BookInfo],
+        logging: false,
+    }
+);
 
-export const ConnectToDb = () => {
+export const ConnectToDb = async () => {
     SequelizeConnection.authenticate().then(async () => {
-        //console.log("database connected")
-        try {
-            await SequelizeConnection.sync({ force: true });
-        } catch (error) {
-            console.log(error.message)
-        }
+        await SequelizeConnection.sync({ force: isMaster })
     }).catch((e: any) => {
         console.log(e.message)
     })

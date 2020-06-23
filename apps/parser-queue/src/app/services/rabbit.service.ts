@@ -17,9 +17,9 @@ export class RabbitConnector {
     chanel: ConfirmChannel;
 
     constructor(uri: string, user: string, password: string) {
-        this._uri = uri;//process.env.RABBIT_URI || 'amqp://localhost:5672';
-        this._user = user;//process.env.RABBIT_USER || 'guest';
-        this._password = password;//process.env.RABBIT_PASSSWORD || 'guest';
+        this._uri = uri;
+        this._user = user;
+        this._password = password;
 
     }
 
@@ -28,7 +28,7 @@ export class RabbitConnector {
             this._connection = await connect(this._uri, credentials.plain(this._user, this._password));
             this.chanel = await this._connection.createConfirmChannel();
         } catch (error) {
-            console.log('Can`t connect to rebbit');
+            console.error('Can`t connect to rebbit');
         }
     }
 
@@ -46,7 +46,7 @@ export class RabbitConnector {
         return this.chanel.sendToQueue(queueName, Buffer.from(data), { persistent: true });
     }
 
-    protected async subscribeOnChannelAB(queueName: string, ): Promise<Replies.Consume> {
+    protected async subscribeOnChannelAB(queueName: string,): Promise<Replies.Consume> {
         this.chanel.prefetch(1);
         return await this.chanel.consume(queueName, (msg: ConsumeMessage) => {
             console.log(msg.content.toString());

@@ -4,14 +4,14 @@ import { ConsumeMessage, Replies, Message } from 'amqplib';
 
 import { RabbitConnector } from '../services/rabbit.service';
 import { BookInfo, BookInfoI } from '../models/book-info.model';
-
+import { environment } from '../../environments/environment';
 
 export class BookParser extends RabbitConnector {
 
-    private queueName = 'books_for_parse';
+    private queueName = environment.rabbitQueueName;
 
     constructor() {
-        super('amqp://localhost:5672', 'guest', 'guest');
+        super(environment.rabbitUri, environment.rabbitUser, environment.rabbitPassword);
     }
 
     async subscribeOnChannel(): Promise<Replies.Consume> {
@@ -19,7 +19,7 @@ export class BookParser extends RabbitConnector {
         this.chanel.prefetch(1);
         return await this.chanel.consume(this.queueName, async (msg: ConsumeMessage) => {
             const res = await this.parseFile(msg.content.toString());
-            if(res) {
+            if (res) {
                 this.chanel.ack(msg);
             } else {
                 this.chanel.reject(msg, false);
@@ -27,6 +27,9 @@ export class BookParser extends RabbitConnector {
         }, { noAck: false })
     }
 
+    async getQueueInfo(): Promise<Replies.AssertQueue> {
+        return await this.checkQueue(this.queueName);
+    }
 
     private async parseFile(pathToFile: string) {
 
@@ -68,15 +71,18 @@ export class BookParser extends RabbitConnector {
             }
         }
 
+        const author = authorsNamesArray.join(' ') ? authorsNamesArray.join(' ') : null;
+        const subject = subjectsStringsArray.join(' ') ? subjectsStringsArray.join(' ') : null;
+
         const booksInfo: BookInfoI = {
             id,
-            title,
-            author: authorsNamesArray.join(' '),
-            publisher,
-            publicationDate,
-            language,
-            subject: subjectsStringsArray.join(' '),
-            licenseRights,
+            title: title ? title : null,
+            publisher: publisher ? publisher : null,
+            publicationDate: publicationDate ? publicationDate : null,
+            language: language ? language : null,
+            licenseRights: licenseRights ? licenseRights : null,
+            author,
+            subject,
         }
         return await this.saveBookInfo(booksInfo);
 

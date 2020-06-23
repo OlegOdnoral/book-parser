@@ -5,7 +5,7 @@
 
 import * as express from 'express';
 
-import { fork, isMaster, isWorker, worker } from 'cluster';
+import { fork, isMaster, isWorker } from 'cluster';
 import { cpus } from 'os';
 import { pid } from 'process';
 
@@ -16,7 +16,10 @@ const app = express();
 
 
 const bookParser = new BookParser();
+const port = process.env.port || 3334;
+
 ConnectToDb();
+
 // app.get('/api', (req, res) => {
 //   res.send({ message: 'Welcome to parser-queue!' });
 // });
@@ -30,8 +33,9 @@ ConnectToDb();
 
 
 if (isMaster) {
+  console.log(`Listening at http://localhost:${port}/api`);
   for (let i = 0; i <= cpus().length - 2; i++) {
-
+    
     fork().on('disconnect', () => {
       console.log(`Worker ${pid} disconnect`);
     }).on('error', () => {
@@ -43,16 +47,14 @@ if (isMaster) {
 
 if (isWorker) {
 
-  app.get('/api', (req, res) => {
-    //console.log(`Worker was call ${pid}`);
-    res.send({ message: 'Welcome to book-parser!' });
+  app.get('/get_queue_info', async (req, res) => {
+    const resData = await bookParser.getQueueInfo();
+    res.send(resData);
   });
 
-  const port = process.env.port || 3334;
-  const server = app.listen(port, () => {
-    bookParser.subscribeOnChannel();
+  const server = app.listen(port, async () => {
+    await bookParser.subscribeOnChannel();
     console.log(`Worker was started ${pid}`);
-    console.log(`Listening at http://localhost:${port}/api`);
   });
   server.on('error', console.error);
 

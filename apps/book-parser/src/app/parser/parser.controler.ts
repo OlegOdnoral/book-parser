@@ -2,15 +2,16 @@ import { sep } from 'path';
 
 import { Glob } from 'glob';
 import { RabbitConnector } from '../queue/rabbit.service';
+import { environment } from '../../environments/environment';
 
 
 const filesFolder = `${process.cwd()}${sep}rdf-files${sep}cache`;
 
 export class QueueSender extends RabbitConnector {
-    private queueName = 'books_for_parse';
+    private queueName = environment.rabbitQueueName;
 
     constructor() {
-        super('amqp://localhost:5672', 'guest', 'guest');
+        super(environment.rabbitUri, environment.rabbitUser, environment.rabbitPassword);
     }
 
     getPathToFiles = () => {

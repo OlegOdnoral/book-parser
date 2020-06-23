@@ -17,9 +17,9 @@ export class RabbitConnector {
     chanel: ConfirmChannel;
 
     constructor(uri: string, user: string, password: string) {
-        this._uri = uri;//process.env.RABBIT_URI || 'amqp://localhost:5672';
-        this._user = user;//process.env.RABBIT_USER || 'guest';
-        this._password = password;//process.env.RABBIT_PASSSWORD || 'guest';
+        this._uri = uri;
+        this._user = user;
+        this._password = password;
 
     }
 

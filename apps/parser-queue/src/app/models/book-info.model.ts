@@ -13,8 +13,26 @@ export interface BookInfoI {
 
 
 @Table({
-    tableName: 'book_info',
-    timestamps: true
+    tableName: 'book_info_test',
+    timestamps: true,
+    indexes: [
+        {
+            name: 'title_index',
+            fields: [{ name: 'title', order: 'ASC', collate: 'default' }],
+            using: 'BTREE',
+
+        },
+        {
+            name: 'author_index',
+            fields: [{ name: 'author', order: 'ASC', collate: 'default' }],
+            using: 'BTREE',
+        },
+        {
+            name: 'publicationDate_index',
+            fields: [{ name: 'publicationDate', order: 'ASC' }],
+            using: 'BTREE',
+        },
+    ]
 })
 export class BookInfo extends Model implements BookInfoI {
 
@@ -24,16 +42,23 @@ export class BookInfo extends Model implements BookInfoI {
 
     @Column('text')
     public title: string;
+
     @Column('text')
     public author: string;
+
     @Column('text')
     public publisher: string;
+
     @Column('date')
     public publicationDate: string;
+
     @Column
     public language: string;
+
     @Column('text')
     public subject: string;
+
     @Column('text')
     public licenseRights: string;
+
 }
