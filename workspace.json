@@ -89,7 +89,7 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "parser-queue:build:production"
+            "buildTarget": "parser-queue:build"
           }
         },
         "lint": {
