@@ -2,6 +2,24 @@
 
 This project was generated using [Nx](https://nx.dev).
 
+--------------------
+
+### Instruction
+
+  To run the application you must install PostgresSQL and RabbitMQ. In both cases, I use default settings and credential for authorization. 
+
+  In case you have Docker on pc just run `docker-compose up` command in the project folder and wait until all will be ready for use.
+
+ 1. [Download](https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.zip) and unpack the archive to **./rdf-files/cache/** folder
+
+ 2. Run `npm run receiver` and `npm run sender`. Those apps will create all necessary resources in PostgresSQL and RabbitMQ (tables, indexes, queue)
+
+ 3. Send GET request to [http://localhost:3333/send_data_to_parse](http://localhost:3333/send_data_to_parse). This request will run function that sends links to files intro queue. You can check result intro **book_info_dev** Postgres table
+
+
+--------------------
+
+
 <p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
 
 🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
