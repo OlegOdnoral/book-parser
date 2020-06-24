@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
+    "sender": "nx serve book-parser",
+    "receiver": "nx serve parser-queue",
     "start": "nx serve parser-queue",
     "build": "nx build",
     "test": "nx test",
