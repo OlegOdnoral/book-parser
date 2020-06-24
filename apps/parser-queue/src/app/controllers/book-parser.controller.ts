@@ -23,7 +23,12 @@ export class BookParser extends RabbitConnector {
     }
 
     async subscribeOnChannel(): Promise<Replies.Consume> {
-        await this.tryConnect();
+        try {
+            await this.tryConnect(this.queueName);
+        } catch (error) {
+            console.error('Rabbit connection issue');
+        }
+
         this.chanel.prefetch(1);
 
         return await this.chanel.consume(this.queueName, async (msg: ConsumeMessage) => {
@@ -111,7 +116,7 @@ export class BookParser extends RabbitConnector {
         if (subjectsArray.length > 0) {
             for (let i = 0; i < subjectsArray.length; i++) {
                 const subjectData = subjectsArray.item(i).getElementsByTagName(valueTagname)?.item(0)?.textContent;
-                if (subjectData.trim()) valuesStringsArray.push(subjectData);
+                if (subjectData) valuesStringsArray.push(subjectData.trim());
             }
         }
         const res = valuesStringsArray.join(' ').trim()

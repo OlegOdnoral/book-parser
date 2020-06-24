@@ -14,10 +14,15 @@ export class QueueSender extends RabbitConnector {
         super(environment.rabbitUri, environment.rabbitUser, environment.rabbitPassword);
     }
 
-    getPathToFiles = () => {
-        this.tryConnect();
+    async getPathToFiles () {
+        try {
+            await this.tryConnect(this.queueName);
+        } catch (error) {
+            console.error('Rabbit connection issue');
+        }
         new Glob(`${filesFolder}${sep}**${sep}*.rdf`, (err: Error, matches: string[]) => {
             matches.forEach((item: string) => this.publishToQueue(this.queueName, item));
         });
+        return true;
     }
 }

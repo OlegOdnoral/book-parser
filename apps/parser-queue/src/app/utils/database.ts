@@ -15,13 +15,10 @@ export class SequelizeConnection extends Sequelize {
     }
 
     async connectToDatabase(): Promise<void> {
-        return this.authenticate().then((res) => res)
-        .catch((error) => {
-            console.log(JSON.stringify(error));
-        });
+        return await this.authenticate();
     }
 
     async syncWithModels(): Promise<SequelizeConnection> {
-        return this.sync({ force: isMaster });
+        return await this.sync({ force: isMaster });
     }
 }

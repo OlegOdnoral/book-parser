@@ -33,7 +33,7 @@
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
-            "buildTarget": "book-parser:build:production"
+            "buildTarget": "book-parser:build"
           }
         },
         "lint": {

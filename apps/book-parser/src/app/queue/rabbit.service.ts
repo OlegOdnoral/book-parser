@@ -23,13 +23,11 @@ export class RabbitConnector {
 
     }
 
-    protected async tryConnect() {
-        try {
-            this._connection = await connect(this._uri, credentials.plain(this._user, this._password));
-            this.chanel = await this._connection.createConfirmChannel();
-        } catch (error) {
-            console.log('Can`t connect to rebbit');
-        }
+    protected async tryConnect(queueName: string) {
+        this._connection = await connect(this._uri, credentials.plain(this._user, this._password));
+        this.chanel = await this._connection.createConfirmChannel();
+        this.chanel.assertQueue(queueName, {durable: true});
+        return this.chanel.checkQueue(queueName);
     }
 
     protected async disconnect(): Promise<void> {
