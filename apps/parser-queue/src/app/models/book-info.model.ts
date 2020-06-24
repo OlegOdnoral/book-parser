@@ -1,4 +1,5 @@
 import { Model, Table, PrimaryKey, Column, Unique } from 'sequelize-typescript';
+import { environment } from '../../environments/environment';
 
 export interface BookInfoI {
     id: string | number;
@@ -13,7 +14,7 @@ export interface BookInfoI {
 
 
 @Table({
-    tableName: 'book_info_test',
+    tableName: environment.dbBookInfoTable,
     timestamps: true,
     indexes: [
         {

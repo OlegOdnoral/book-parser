@@ -9,13 +9,31 @@ import { fork, isMaster, isWorker } from 'cluster';
 import { cpus } from 'os';
 import { pid } from 'process';
 
-import { ConnectToDb } from './app/utils/database';
+import { environment } from './environments/environment';
+import { SequelizeConnection, SequelizeConnectionConfigI } from './app/utils/database';
 import { BookParser } from './app/controllers/book-parse.controller';
+import { BookInfo } from './app/models/book-info.model';
 
 const app = express();
 
 
 const bookParser = new BookParser();
+
+
+const sequelizeConnectionConfig: SequelizeConnectionConfigI = {
+  database: environment.dbDatabase,
+    username: environment.dbUser, 
+    password: environment.dbPassword, 
+    options: {
+      dialect: environment.dbDialect,
+      host: environment.dbHost,
+      logging: environment.production,
+      models: [BookInfo]
+    }
+};
+const pgConnection = new SequelizeConnection(sequelizeConnectionConfig);
+pgConnection.connectToDatabase();
+
 const port = process.env.port || 3334;
 
 ConnectToDb();

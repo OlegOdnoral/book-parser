@@ -1,7 +1,7 @@
 import { EnvironmentI } from './environment.interface';
 
 export const environment: EnvironmentI = {
-  production: false,
+  production: true,
   rabbitUri: 'amqp://localhost:5672',
   rabbitUser: 'guest',
   rabbitPassword: 'guest',
@@ -11,5 +11,5 @@ export const environment: EnvironmentI = {
   dbDatabase: 'postgres',
   dbUser: 'postgres',
   dbPassword: 'postgres',
-  dbBookInfoTable: 'book_info_dev'
+  dbBookInfoTable: 'book_info_test'
 };

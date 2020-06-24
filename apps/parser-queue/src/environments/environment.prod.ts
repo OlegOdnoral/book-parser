@@ -11,4 +11,5 @@ export const environment: EnvironmentI = {
   dbDatabase: 'postgres',
   dbUser: 'postgres',
   dbPassword: 'postgres',
+  dbBookInfoTable: 'book_info'
 };

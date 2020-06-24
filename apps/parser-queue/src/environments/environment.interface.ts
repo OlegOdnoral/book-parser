@@ -11,4 +11,6 @@ export interface EnvironmentI {
     dbDatabase: string;
     dbUser: string;
     dbPassword: string;
+
+    dbBookInfoTable: string;
 }
